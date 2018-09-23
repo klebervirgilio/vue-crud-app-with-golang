@@ -53,12 +53,12 @@ func (r MongoRepository) FindAll(selector map[string]interface{}) ([]*core.Kudo,
 }
 
 // Delete deletes a kudo from mongo according to the query criteria provided.
-func (r MongoRepository) Delete(repoID string) error {
+func (r MongoRepository) Delete(kudo *core.Kudo) error {
 	session := r.session.Copy()
 	defer session.Close()
 	coll := session.DB("").C(collectionName)
 
-	return coll.Remove(bson.M{"repoId": repoID})
+	return coll.Remove(bson.M{"repoId": kudo.RepoID})
 }
 
 // Update updates an kudo.

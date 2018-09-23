@@ -133,7 +133,7 @@ var _ = Describe("Mongo", func() {
 			}
 
 			// Act
-			repo.Delete("some-id")
+			repo.Delete(&core.Kudo{RepoID: "some-id"})
 
 			// Assert
 			kudos, err := repo.FindAll(map[string]interface{}{})
