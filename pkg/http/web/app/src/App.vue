@@ -17,7 +17,8 @@
       <v-layout>
         <v-flex> 
           <div class="text-xs-center">
-            <v-btn slot="activator" outline color="white lighten-2">Show My Kudos</v-btn>
+            <v-btn v-if="loved" slot="activator" @click.prevent="loved = false" outline color="white lighten-2">Show All</v-btn>
+            <v-btn v-else slot="activator" @click.prevent="loved = true" outline color="white lighten-2">Show My Kudos</v-btn>
           </div>
         </v-flex>
       </v-layout>
@@ -25,7 +26,7 @@
       
     <v-container grid-list-md fluid class="grey lighten-4">
       <v-layout row wrap>
-        <v-flex v-for="repo in repos" :key="repo.id" md4 xs12 sm12>
+        <v-flex v-for="repo in filteredRepos()" :key="repo.id" md4 xs12 sm12>
           <v-card >
             <v-card-title primary-title>
               <div class="repo-card-content">
@@ -36,9 +37,7 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn @click.prevent="like(repo)" v-if="isLiked(repo)" flat icon color="pink"><v-icon>favorite</v-icon></v-btn>
-              <v-btn @click.prevent="dislike(repo)" v-else flat icon color="pink"><v-icon>favorite_border</v-icon></v-btn>
-              <v-dialog>
+              <v-dialog v-if="isLiked(repo)">
                 <v-btn slot="activator" icon flat color="orange lighten-2"><v-icon>notes</v-icon></v-btn>
                 <v-card>
                   <v-card-title class="headline white--text teal lighten-2" primary-title>Notes</v-card-title>
@@ -54,6 +53,10 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
+              <v-btn @click.prevent="toggleLike(repo)"  flat icon color="pink">
+                <v-icon v-if="isLiked(repo)">favorite</v-icon>
+                <v-icon v-else>favorite_border</v-icon>
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -67,6 +70,7 @@ export default {
   name: 'App',
   data() {
     return {
+      loved: false,
       repos: [],
       favs: [],
     }
@@ -75,15 +79,24 @@ export default {
     this.search({target: {value: 'vuejs'}})
   },
   methods: {
+    filteredRepos(){
+      if (this.loved) {
+        return this.repos.filter( repo => this.favs.includes(repo.id) )
+      }
+      return this.repos;
+    },
     isLiked(repo){
       return this.favs.includes(repo.id)
     },
-    like(repo){
-      console.log(repo);
+    toggleLike(repo){
+      if (this.isLiked(repo)) {
+        return this.dislike(repo)
+      }
       this.favs.push(repo.id);
     },
     dislike(repo){
-      this.favs = this.favs.filter( fav => fav !== repo.id );
+      const index = this.favs.indexOf(repo.id)
+      this.favs.splice(index, 1);
     },
     search(evt) {
       fetch("https://api.github.com/search/repositories?q=" + evt.target.value)
