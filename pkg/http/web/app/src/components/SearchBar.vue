@@ -18,16 +18,10 @@
 export default {
     data() {
         return {
-            query: 'okta',
+            query: '',
         };
     },
     props: ['defaultQuery'],
-    mounted() {
-        if(!this.defaultQuery) return;
-        
-        this.query = this.defaultQuery;
-        this.onSearchSubmition();
-    },
     methods: {
         onSearchSubmition() {
             this.$emit('search-submitted', this.query);

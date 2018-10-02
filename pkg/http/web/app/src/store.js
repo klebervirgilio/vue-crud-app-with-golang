@@ -11,22 +11,16 @@ const store = new Vuex.Store({
   mutations: {
     toggleKudo(state, repo) {
       if (!state.kudos[repo.id]) {
-        let kudo = {}
-        kudo[repo.id] = repo;
-        return state.kudos = Object.assign({}, kudo, state.kudos);
+        return state.kudos = { [repo.id]: repo, ...state.kudos };
       }
 
-      let kudos = {};
-      Object.entries(state.kudos).forEach(([repoId, kudo]) => {
-        if (repoId !== repo.id) {
-          kudos[repoId] = kudo;
-        }
-      });
-
-      return state.kudos = kudos;
+      return state.kudos =  Object.entries(state.kudos).reduce((kudos, [repoId, kudo]) => {
+                              (repoId == repo.id) ? kudos
+                                                  : { [repoId]: kudo, ...kudos };
+                            }, {});
     },
-    addRepos (state, repos) {
-      state.repos = [...state.repos, ...repos];
+    resetRepos (state, repos) {
+      state.repos = repos;
     }
   },
   getters: {
