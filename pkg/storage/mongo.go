@@ -29,7 +29,7 @@ func (r MongoRepository) Find(repoID string) (*core.Kudo, error) {
 	coll := session.DB("").C(collectionName)
 
 	var kudo core.Kudo
-	err := coll.Find(bson.M{"repoId": repoID}).One(&kudo)
+	err := coll.Find(bson.M{"repoId": repoID, "userId": kudo.UserID}).One(&kudo)
 	if err != nil {
 		r.logger.Printf("error: %v\n", err)
 		return nil, err
@@ -58,7 +58,7 @@ func (r MongoRepository) Delete(kudo *core.Kudo) error {
 	defer session.Close()
 	coll := session.DB("").C(collectionName)
 
-	return coll.Remove(bson.M{"repoId": kudo.RepoID})
+	return coll.Remove(bson.M{"repoId": kudo.RepoID, "userId": kudo.UserID})
 }
 
 // Update updates an kudo.
@@ -67,7 +67,7 @@ func (r MongoRepository) Update(kudo *core.Kudo) error {
 	defer session.Close()
 	coll := session.DB("").C(collectionName)
 
-	return coll.Update(bson.M{"repoId": kudo.RepoID}, kudo)
+	return coll.Update(bson.M{"repoId": kudo.RepoID, "userId": kudo.UserID}, kudo)
 }
 
 // Create kudos in the database.
@@ -77,7 +77,7 @@ func (r MongoRepository) Create(kudos ...*core.Kudo) error {
 	coll := session.DB("").C(collectionName)
 
 	for _, kudo := range kudos {
-		_, err := coll.Upsert(bson.M{"repoId": kudo.RepoID}, kudo)
+		_, err := coll.Upsert(bson.M{"repoId": kudo.RepoID, "userId": kudo.UserID}, kudo)
 		if err != nil {
 			return err
 		}
@@ -86,7 +86,8 @@ func (r MongoRepository) Create(kudos ...*core.Kudo) error {
 	return nil
 }
 
-func (r MongoRepository) Count(selector map[string]interface{}) (int, error) {
+// Count counts documents for a given collection
+func (r MongoRepository) Count() (int, error) {
 	session := r.session.Copy()
 	defer session.Close()
 	coll := session.DB("").C(collectionName)

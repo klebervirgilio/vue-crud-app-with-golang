@@ -40,3 +40,11 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  branch = "develop"
+  name = "github.com/okta/okta-jwt-verifier-golang"
+
+[[constraint]]
+  name = "github.com/rs/cors"
+  version = "1.5.0"

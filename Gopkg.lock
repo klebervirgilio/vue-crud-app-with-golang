@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  pruneopts = "UT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
+
+[[projects]]
   branch = "master"
   digest = "1:e0361634f0b5e1fd3227eaec90a86bc8595cb2526e71e41bcd72b6e474e198ca"
   name = "github.com/globalsign/mgo"
@@ -28,6 +36,53 @@
   ]
   pruneopts = "UT"
   revision = "a1dbeea552b7c8df4b542c66073e393de198a800"
+
+[[projects]]
+  digest = "1:ccfa094742ce1c97fd3f6481e1bf98f3d9862510eee2bc0eb56e2745396bd330"
+  name = "github.com/julienschmidt/httprouter"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "8c199fb6259ffc1af525cc3ad52ee60ba8359669"
+  version = "v1.1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:5c290a4d4c836581d359fb357d2875b2babfd95b09f5652368bd833cecfccb55"
+  name = "github.com/lestrrat-go/jwx"
+  packages = [
+    "internal/base64",
+    "internal/option",
+    "jwa",
+    "jwk",
+    "jws",
+    "jws/sign",
+    "jws/verify",
+  ]
+  pruneopts = "UT"
+  revision = "0d477e6a1f0ec69634840308e3873fe71d928dd0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:992a4e430ab23874d31778dc2a17ba41e7733a9cfd151d1ee8476b46a828e7f5"
+  name = "github.com/lestrrat-go/pdebug"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "39f9a71bcabe9432cbdfe4d3d33f41988acd2ce6"
+
+[[projects]]
+  branch = "develop"
+  digest = "1:63d6ab3651c83caf758fbf0d62575bee355b0300b01cd21ab82f3464dc3744b8"
+  name = "github.com/okta/okta-jwt-verifier-golang"
+  packages = [
+    ".",
+    "adaptors",
+    "adaptors/lestrratGoJwx",
+    "discovery",
+    "discovery/oidc",
+    "errors",
+  ]
+  pruneopts = "UT"
+  revision = "04702def3e1b9b1c6b419c9c3aae1ec184a5d4b2"
 
 [[projects]]
   digest = "1:42e29deef12327a69123b9cb2cb45fee4af5c12c2a23c6e477338279a052703f"
@@ -76,6 +131,22 @@
   pruneopts = "UT"
   revision = "7615b9433f86a8bdf29709bf288bc4fd0636a369"
   version = "v1.4.2"
+
+[[projects]]
+  digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
+  digest = "1:0b8dd7447e420afff0260179dc892711e837edd1d446bc78dab924624a3c3c81"
+  name = "github.com/rs/cors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "3fb1b69b103a84de38a19c3c6ec073dd6caa4d3f"
+  version = "v1.5.0"
 
 [[projects]]
   branch = "master"
@@ -152,8 +223,11 @@
   input-imports = [
     "github.com/globalsign/mgo",
     "github.com/globalsign/mgo/bson",
+    "github.com/julienschmidt/httprouter",
+    "github.com/okta/okta-jwt-verifier-golang",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
+    "github.com/rs/cors",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

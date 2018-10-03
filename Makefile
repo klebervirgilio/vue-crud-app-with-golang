@@ -4,7 +4,10 @@ setup: run_services
 	@go run ./cmd/db/setup.go
 
 run_services:
-	@docker-compose up -d
+	@docker-compose up --build -d
 
 run_tests: run_services
 	@${GINKGO} pkg/**
+
+run_server:
+	@MONGO_URL=mongodb://mongo_user:mongo_secret@0.0.0.0:27017/kudos go run cmd/main.go

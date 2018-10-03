@@ -2,19 +2,20 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"log"
+	"net/http"
 
-	"github.com/klebervirgilio/vue-crud-app-with-golang/pkg/core"
+	restapi "github.com/klebervirgilio/vue-crud-app-with-golang/pkg/http"
 	"github.com/klebervirgilio/vue-crud-app-with-golang/pkg/storage"
 )
 
 func main() {
 	var httpPort string
-	flag.StringVar(&httpPort, "bind on port", ":5000", "")
+	flag.StringVar(&httpPort, "b", ":4444", "bind on port")
 	flag.Parse()
 
 	repo := storage.NewMongoRepository()
-	repo.Create(&core.Kudo{})
+	handler := restapi.NewService(repo)
 
-	fmt.Println("spin up server...")
+	log.Fatal(http.ListenAndServe(httpPort, handler.Router))
 }

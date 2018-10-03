@@ -10,25 +10,25 @@
         text-color="white"
         slider-color="white"
       >
-        <v-tab class="white--text" :key="1">
-          SEARCH
-        </v-tab>
         <v-tab class="white--text" :key="2">
           KUDOS
         </v-tab>
+        <v-tab class="white--text" :key="1">
+          SEARCH
+        </v-tab>
       </v-tabs>
         <v-tabs-items style="width:100%" v-model="tabs">
-          <v-tab-item :key="1">
-            <v-layout row wrap>
-              <v-flex v-for="repo in repos" :key="repo.id" md4>
-                <GitHubRepo :repo="repo" />
-              </v-flex>
-            </v-layout>
-          </v-tab-item>
           <v-tab-item :key="2">
             <v-layout row wrap>
               <v-flex v-for="kudo in kudos" :key="kudo.id" md4 >
                 <GitHubRepo :repo="kudo" />
+              </v-flex>
+            </v-layout>
+          </v-tab-item> 
+          <v-tab-item :key="1">
+            <v-layout row wrap>
+              <v-flex v-for="repo in repos" :key="repo.id" md4>
+                <GitHubRepo :repo="repo" />
               </v-flex>
             </v-layout>
           </v-tab-item>
@@ -41,24 +41,29 @@
 import SearchBar from './SearchBar.vue'
 import GitHubRepo from './GithubRepo.vue'
 import githubClient from '../githubClient'
-import { mapMutations, mapGetters } from 'vuex'
+import { mapMutations, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'Home',
   components: { SearchBar, GitHubRepo },
   data() {
     return {
-      tabs: null
+      tabs: 0
     }
   },
   computed: mapGetters(['kudos', 'repos']),
+  created() {
+    this.getKudos();
+  },
   methods: {
     githubQuery(query) {
+      this.tabs = 1;
       githubClient
         .getJSONRepos(query)
         .then(response => this.resetRepos(response.items) )
     },
-    ...mapMutations(['resetRepos'])
+    ...mapMutations(['resetRepos']),
+    ...mapActions(['getKudos']),
   },
 }
 </script>

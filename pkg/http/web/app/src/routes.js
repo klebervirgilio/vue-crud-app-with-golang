@@ -19,7 +19,7 @@ export default new VueRouter({
   routes: [
     { path: '/', component: Login },
     { path: '/me', component: Home, meta: { requiresAuth: true }},
-    { name: '/repo-details', path: '/repo/:id', component: GitHubRepoDetails, meta: { requiresAuth: true } },
+    { name: 'repo-details', path: '/repo/:id', component: GitHubRepoDetails, meta: { requiresAuth: true } },
     { path: '/implicit/callback', component: Auth.handleCallback() }
   ]
 });

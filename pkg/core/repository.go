@@ -7,5 +7,5 @@ type Repository interface {
 	Delete(kudo *Kudo) error
 	Update(kudo *Kudo) error
 	Create(kudo ...*Kudo) error
-	Count(selector map[string]interface{}) (int, error)
+	Count() (int, error)
 }

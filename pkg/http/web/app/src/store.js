@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import APIClient from './apiClient';
+
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -9,18 +11,11 @@ const store = new Vuex.Store({
     repos: [],
   },
   mutations: {
-    toggleKudo(state, repo) {
-      if (!state.kudos[repo.id]) {
-        return state.kudos = { [repo.id]: repo, ...state.kudos };
-      }
-
-      return state.kudos =  Object.entries(state.kudos).reduce((kudos, [repoId, kudo]) => {
-                              (repoId == repo.id) ? kudos
-                                                  : { [repoId]: kudo, ...kudos };
-                            }, {});
-    },
     resetRepos (state, repos) {
       state.repos = repos;
+    },
+    resetKudos(state, kudos) {
+      state.kudos = kudos;
     }
   },
   getters: {
@@ -37,10 +32,28 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    toggleKudo(context, repo) {
-      setTimeout(() => {
-        context.commit('toggleKudo', repo);
-      }, 100)
+    getKudos ({commit}) {
+      APIClient.getKudos().then((data) => {
+        commit('resetKudos', data.reduce((acc, kudo) => { 
+                               return {[kudo.id]: kudo, ...acc}
+                             }, {}))
+      })
+    },
+    toggleKudo({ commit, state }, repo) {
+      if (!state.kudos[repo.id]) {
+        return APIClient
+          .createKudo(repo)
+          .then(kudo => commit('resetKudos', { [kudo.id]: kudo, ...state.kudos }))
+      }
+
+      const kudos = Object.entries(state.kudos).reduce((acc, [repoId, kudo]) => {
+                      (repoId == repo.id) ? acc
+                                          : { [repoId]: kudo, ...acc };
+                    }, {});
+      
+      return APIClient
+        .deleteKudo(repo)
+        .then(() => commit('resetKudos', kudos));
     }
   }
 });
