@@ -8,8 +8,8 @@ import router from './routes'
 
 Vue.config.productionTip = false
 
-
 // const API_URL = process.env.NODE_ENV == 'production' ? '' : 'http://localhost:3000'
+router.beforeEach(Vue.prototype.$auth.authRedirectGuard())
 
 new Vue({
   store,
