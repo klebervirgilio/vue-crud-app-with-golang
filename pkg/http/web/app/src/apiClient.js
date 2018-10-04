@@ -2,7 +2,7 @@ import Vue from 'vue';
 import axios from 'axios';
 
 const client = axios.create({
-  baseURL: process.env.NODE_ENV == 'production' ? '' : 'http://localhost:4444',
+  baseURL: process.env.NODE_ENV == 'production' ? 'https://hidden-woodland-44165.herokuapp.com' : 'http://localhost:4444',
   json: true
 });
 

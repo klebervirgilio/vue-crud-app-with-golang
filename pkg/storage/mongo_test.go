@@ -52,8 +52,7 @@ var _ = Describe("Mongo", func() {
 			})
 
 			It("does not create duplicated kudos", func() {
-				selector := map[string]interface{}{"repoId": "some-id"}
-				Expect(repo.Count(selector)).To(Equal(1))
+				Expect(repo.Count()).To(Equal(1))
 			})
 		})
 	})
@@ -69,7 +68,7 @@ var _ = Describe("Mongo", func() {
 			}...)
 
 			// Act
-			count, err := repo.Count(map[string]interface{}{})
+			count, err := repo.Count()
 			if err != nil {
 				Fail(err.Error())
 			}
