@@ -1,18 +1,18 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"net/http"
+	"os"
 
 	web "github.com/klebervirgilio/vue-crud-app-with-golang/pkg/http"
 	"github.com/klebervirgilio/vue-crud-app-with-golang/pkg/storage"
 )
 
 func main() {
-	var httpPort string
-	flag.StringVar(&httpPort, "b", ":4444", "bind on port")
-	flag.Parse()
+	httpPort := os.Getenv("PORT")
+	// flag.StringVar(&httpPort, "b", ":4444", "bind on port")
+	// flag.Parse()
 
 	repo := storage.NewMongoRepository()
 	webService := web.New(repo)

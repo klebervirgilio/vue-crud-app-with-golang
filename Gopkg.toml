@@ -24,6 +24,10 @@
 #   go-tests = true
 #   unused-packages = true
 
+[metadata.heroku]
+  root-package = "github.com/klebervirgilio/vue-crud-app-with-golang"
+  go-version = "1.11"
+  install = [ "./cmd/..." ]
 
 [[constraint]]
   branch = "master"
