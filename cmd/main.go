@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	restapi "github.com/klebervirgilio/vue-crud-app-with-golang/pkg/http"
+	web "github.com/klebervirgilio/vue-crud-app-with-golang/pkg/http"
 	"github.com/klebervirgilio/vue-crud-app-with-golang/pkg/storage"
 )
 
@@ -15,8 +15,8 @@ func main() {
 	flag.Parse()
 
 	repo := storage.NewMongoRepository()
-	api := restapi.New(repo)
+	webService := web.New(repo)
 
 	log.Printf("Running on port %s\n", httpPort)
-	log.Fatal(http.ListenAndServe(httpPort, api.Router))
+	log.Fatal(http.ListenAndServe(httpPort, webService.Router))
 }

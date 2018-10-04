@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -82,7 +81,6 @@ func (s Service) Update(w http.ResponseWriter, r *http.Request, params httproute
 
 	githubRepo := kudo.GitHubRepo{}
 	json.Unmarshal(payload, &githubRepo)
-	fmt.Println(githubRepo)
 
 	kudo, err := service.UpdateKudoWith(githubRepo)
 	if err != nil {
