@@ -3,14 +3,13 @@ package http
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
-	"strings"
+	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/klebervirgilio/vue-crud-app-with-golang/pkg/core"
 	"github.com/klebervirgilio/vue-crud-app-with-golang/pkg/kudo"
-	jwtverifier "github.com/okta/okta-jwt-verifier-golang"
-	"github.com/rs/cors"
 )
 
 type Service struct {
@@ -18,14 +17,26 @@ type Service struct {
 	Router http.Handler
 }
 
+func New(repo core.Repository) Service {
+	service := Service{
+		repo: repo,
+	}
+
+	router := httprouter.New()
+	router.GET("/kudos", service.Index)
+	router.POST("/kudos", service.Create)
+	router.DELETE("/kudos/:id", service.Delete)
+	router.PUT("/kudos/:id", service.Update)
+
+	service.Router = UseMiddlewares(router)
+
+	return service
+}
+
 func (s Service) Index(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	w.Header().Set("Content-Type", "application/json")
-	accessToken := r.Header["Authorization"]
-	parts := strings.Split(accessToken[0], " ")
-	jwt, _ := validateAccessToken(parts[1])
-	service := kudo.NewService(s.repo, jwt.Claims["sub"].(string))
+	service := kudo.NewService(s.repo, r.Context().Value("userId").(string))
 	kudos, err := service.GetKudos()
-	fmt.Println(kudos)
+
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -34,32 +45,50 @@ func (s Service) Index(w http.ResponseWriter, r *http.Request, params httprouter
 	json.NewEncoder(w).Encode(kudos)
 }
 
-func NewService(repo core.Repository) Service {
-	service := Service{
-		repo: repo,
+func (s Service) Create(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	service := kudo.NewService(s.repo, r.Context().Value("userId").(string))
+	payload, _ := ioutil.ReadAll(r.Body)
+
+	githubRepo := kudo.GitHubRepo{}
+	json.Unmarshal(payload, &githubRepo)
+
+	kudo, err := service.CreateKudoFor(githubRepo)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
-
-	router := httprouter.New()
-	router.GET("/kudos", service.Index)
-
-	corsConfig := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowCredentials: true,
-		AllowedHeaders:   []string{"*"},
-		Debug:            true,
-	})
-	service.Router = corsConfig.Handler(router)
-	return service
-	// router.POST("/kudos", Create)
-	// router.PUT("/kudo/:id", Update)
-	// router.DELETE("/kudo/:id", Delete)
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(kudo)
 }
 
-func validateAccessToken(accessToken string) (*jwtverifier.Jwt, error) {
-	jwtVerifierSetup := jwtverifier.JwtVerifier{
-		Issuer:           "https://dev-509836.oktapreview.com/oauth2/default",
-		ClaimsToValidate: map[string]string{"aud": "api://default", "cid": "0oagcbm1o6GTTB9Da0h7"},
+func (s Service) Delete(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	service := kudo.NewService(s.repo, r.Context().Value("userId").(string))
+
+	repoID, _ := strconv.Atoi(params.ByName("id"))
+	githubRepo := kudo.GitHubRepo{RepoID: int64(repoID)}
+
+	_, err := service.RemoveKudo(githubRepo)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
-	verifier := jwtVerifierSetup.New()
-	return verifier.VerifyIdToken(accessToken)
+	w.WriteHeader(http.StatusOK)
+}
+
+func (s Service) Update(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	service := kudo.NewService(s.repo, r.Context().Value("userId").(string))
+	payload, _ := ioutil.ReadAll(r.Body)
+
+	githubRepo := kudo.GitHubRepo{}
+	json.Unmarshal(payload, &githubRepo)
+	fmt.Println(githubRepo)
+
+	kudo, err := service.UpdateKudoWith(githubRepo)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(kudo)
 }

@@ -19,8 +19,11 @@ const store = new Vuex.Store({
     }
   },
   getters: {
-    kudos(state) {
+    allKudos(state) {
       return Object.values(state.kudos);
+    },
+    kudos(state) {
+      return state.kudos;
     },
     repos(state) {
       return state.repos;
@@ -39,6 +42,15 @@ const store = new Vuex.Store({
                              }, {}))
       })
     },
+    updateKudo({ commit, state }, repo) {
+      const kudos = { ...state.kudos, [repo.id]: repo };
+      
+      return APIClient
+        .updateKudo(repo)
+        .then(() => {
+          commit('resetKudos', kudos)
+        });
+    },
     toggleKudo({ commit, state }, repo) {
       if (!state.kudos[repo.id]) {
         return APIClient
@@ -47,10 +59,10 @@ const store = new Vuex.Store({
       }
 
       const kudos = Object.entries(state.kudos).reduce((acc, [repoId, kudo]) => {
-                      (repoId == repo.id) ? acc
-                                          : { [repoId]: kudo, ...acc };
+                      return (repoId == repo.id) ? acc
+                                                 : { [repoId]: kudo, ...acc };
                     }, {});
-      
+
       return APIClient
         .deleteKudo(repo)
         .then(() => commit('resetKudos', kudos));

@@ -20,7 +20,7 @@
         <v-tabs-items style="width:100%" v-model="tabs">
           <v-tab-item :key="2">
             <v-layout row wrap>
-              <v-flex v-for="kudo in kudos" :key="kudo.id" md4 >
+              <v-flex v-for="kudo in allKudos" :key="kudo.id" md4 >
                 <GitHubRepo :repo="kudo" />
               </v-flex>
             </v-layout>
@@ -51,7 +51,7 @@ export default {
       tabs: 0
     }
   },
-  computed: mapGetters(['kudos', 'repos']),
+  computed: mapGetters(['allKudos', 'repos']),
   created() {
     this.getKudos();
   },

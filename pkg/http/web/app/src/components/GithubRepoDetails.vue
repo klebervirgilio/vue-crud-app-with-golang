@@ -2,12 +2,12 @@
   <v-container grid-list-md fluid class="grey lighten-4" >
     <v-layout align-center justify-space-around wrap>
       <v-flex md6>
-        <v-img
+        <!-- <v-img
           :src="repo.owner.avatar_url"
           :alt="repo.owner.login"
           class="grey darken-4"
           width="200"
-        ></v-img>
+        ></v-img> -->
         <h1 class="primary--text">
           <a :href="repo.html_url">{{repo.full_name}}</a>
         </h1>
@@ -33,15 +33,18 @@
           name="input-7-1"
           label="Show some love"
           value=""
+          v-model="repo.notes"
           hint="Describe why you love this project"
         ></v-textarea>
-        <v-btn @click.prevent="submit"> Kudo </v-btn>
+        <v-btn @click.prevent="updateKudo(repo)"> Kudo </v-btn>
+        <router-link tag="a" to="/me">Back</router-link>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   data() {
@@ -52,16 +55,19 @@ export default {
   watch: {
     '$route': 'fetchData'
   },
+  computed: mapGetters(['kudos']),
   created() {
     this.fetchData();
   },
   methods: {
     fetchData() {
-      // FIXME: fetch from server
       fetch('https://api.github.com/repositories/' + this.$route.params.id)
-        .then(r => r.json())
-        .then(r => this.repo = r )
-    }
+        .then(response => response.json())
+        .then((response) => {
+          this.repo = Object.assign(response, this.kudos[this.$route.params.id])
+        })
+    },
+    ...mapActions(['updateKudo'])
   }
 }
 </script>

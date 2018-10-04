@@ -7,16 +7,12 @@ const client = axios.create({
 });
 
 const APIClient =  {
-  toggleKudo(repo) {
-    return this.perform('patch', `/kudos/${repo.id}`, repo);
-  },
-  
   createKudo(repo) {
     return this.perform('post', '/kudos', repo);
   },
 
   deleteKudo(repo) {
-    return this.perform('post', '/kudos', repo);
+    return this.perform('delete', `/kudos/${repo.id}`);
   },
 
   updateKudo(repo) {

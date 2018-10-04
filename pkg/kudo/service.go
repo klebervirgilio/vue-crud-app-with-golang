@@ -1,14 +1,18 @@
 package kudo
 
 import (
+	"strconv"
+
 	"github.com/klebervirgilio/vue-crud-app-with-golang/pkg/core"
 )
 
 type GitHubRepo struct {
-	RepoID   string `json:"repo_id"`
-	RepoURL  string `json:"repo_url"`
-	RepoName string `json:"name"`
-	Language string `json:"language"`
+	RepoID      int64  `json:"id"`
+	RepoURL     string `json:"html_url"`
+	RepoName    string `json:"full_name"`
+	Language    string `json:"language"`
+	Description string `json:"description"`
+	Notes       string `json:"notes"`
 }
 
 type Service struct {
@@ -21,12 +25,7 @@ func (s Service) GetKudos() ([]*core.Kudo, error) {
 }
 
 func (s Service) CreateKudoFor(githubRepo GitHubRepo) (*core.Kudo, error) {
-	kudo := &core.Kudo{
-		UserID:   s.userId,
-		RepoID:   githubRepo.RepoID,
-		RepoName: githubRepo.RepoName,
-		RepoURL:  githubRepo.RepoURL,
-	}
+	kudo := s.githubRepoToKudo(githubRepo)
 	err := s.repo.Create(kudo)
 	if err != nil {
 		return nil, err
@@ -35,13 +34,8 @@ func (s Service) CreateKudoFor(githubRepo GitHubRepo) (*core.Kudo, error) {
 }
 
 func (s Service) UpdateKudoWith(githubRepo GitHubRepo) (*core.Kudo, error) {
-	kudo := &core.Kudo{
-		UserID:   s.userId,
-		RepoID:   githubRepo.RepoID,
-		RepoName: githubRepo.RepoName,
-		RepoURL:  githubRepo.RepoURL,
-	}
-	err := s.repo.Update(kudo)
+	kudo := s.githubRepoToKudo(githubRepo)
+	err := s.repo.Create(kudo)
 	if err != nil {
 		return nil, err
 	}
@@ -49,17 +43,24 @@ func (s Service) UpdateKudoWith(githubRepo GitHubRepo) (*core.Kudo, error) {
 }
 
 func (s Service) RemoveKudo(githubRepo GitHubRepo) (*core.Kudo, error) {
-	kudo := &core.Kudo{
-		UserID:   s.userId,
-		RepoID:   githubRepo.RepoID,
-		RepoName: githubRepo.RepoName,
-		RepoURL:  githubRepo.RepoURL,
-	}
+	kudo := s.githubRepoToKudo(githubRepo)
 	err := s.repo.Delete(kudo)
 	if err != nil {
 		return nil, err
 	}
 	return kudo, nil
+}
+
+func (s Service) githubRepoToKudo(githubRepo GitHubRepo) *core.Kudo {
+	return &core.Kudo{
+		UserID:      s.userId,
+		RepoID:      strconv.Itoa(int(githubRepo.RepoID)),
+		RepoName:    githubRepo.RepoName,
+		RepoURL:     githubRepo.RepoURL,
+		Language:    githubRepo.Language,
+		Description: githubRepo.Description,
+		Notes:       githubRepo.Notes,
+	}
 }
 
 func NewService(repo core.Repository, userId string) Service {

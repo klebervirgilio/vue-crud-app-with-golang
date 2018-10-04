@@ -9,6 +9,9 @@
       </div>
     </v-card-title>
     <v-card-actions>
+      <v-chip>
+        {{repo.language}}
+      </v-chip>
       <v-spacer></v-spacer>
       <v-btn @click.prevent="toggleKudo(repo)"  flat icon color="pink">
         <v-icon v-if="isKudo(repo)">favorite</v-icon>
@@ -19,7 +22,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from 'vuex';
 
 export default {
   data() {

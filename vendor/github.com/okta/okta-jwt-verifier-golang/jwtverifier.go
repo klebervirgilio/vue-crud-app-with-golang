@@ -20,16 +20,15 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"regexp"
-	"strings"
-	"time"
-
 	"github.com/okta/okta-jwt-verifier-golang/adaptors"
 	"github.com/okta/okta-jwt-verifier-golang/adaptors/lestrratGoJwx"
 	"github.com/okta/okta-jwt-verifier-golang/discovery"
 	"github.com/okta/okta-jwt-verifier-golang/discovery/oidc"
 	"github.com/okta/okta-jwt-verifier-golang/errors"
+	"net/http"
+	"regexp"
+	"strings"
+	"time"
 )
 
 type JwtVerifier struct {
@@ -244,7 +243,6 @@ func (j *JwtVerifier) getMetaData() (map[string]interface{}, error) {
 }
 
 func (j *JwtVerifier) isValidJwt(jwt string) (bool, error) {
-	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>.", jwt)
 	if jwt == "" {
 		return false, errors.JwtEmptyStringError()
 	}

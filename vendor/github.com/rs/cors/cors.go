@@ -269,6 +269,7 @@ func (c *Cors) handlePreflight(w http.ResponseWriter, r *http.Request) {
 		c.logf("  Preflight aborted: headers '%v' not allowed", reqHeaders)
 		return
 	}
+
 	if c.allowedOriginsAll {
 		headers.Set("Access-Control-Allow-Origin", "*")
 	} else {

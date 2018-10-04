@@ -15,7 +15,8 @@ func main() {
 	flag.Parse()
 
 	repo := storage.NewMongoRepository()
-	handler := restapi.NewService(repo)
+	api := restapi.New(repo)
 
-	log.Fatal(http.ListenAndServe(httpPort, handler.Router))
+	log.Printf("Running on port %s\n", httpPort)
+	log.Fatal(http.ListenAndServe(httpPort, api.Router))
 }
