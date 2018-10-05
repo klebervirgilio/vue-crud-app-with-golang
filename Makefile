@@ -10,4 +10,4 @@ run_tests: run_services
 	@${GINKGO} pkg/**
 
 run_server:
-	@MONGO_URL=mongodb://mongo_user:mongo_secret@0.0.0.0:27017/kudos go run cmd/main.go
+	@MONGO_URL=mongodb://mongo_user:mongo_secret@0.0.0.0:27017/kudos PORT=:4444 go run cmd/main.go

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -11,8 +12,14 @@ import (
 
 func main() {
 	httpPort := os.Getenv("PORT")
-	// flag.StringVar(&httpPort, "b", ":4444", "bind on port")
-	// flag.Parse()
+	if httpPort == "" {
+		httpPort = ":4444"
+	} else {
+		httpPort = ":" + httpPort
+	}
+
+	flag.StringVar(&httpPort, "b", httpPort, "bind on port")
+	flag.Parse()
 
 	repo := storage.NewMongoRepository()
 	webService := web.New(repo)

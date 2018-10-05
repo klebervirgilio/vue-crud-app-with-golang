@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import axios from 'axios';
 
+const BASE_URI = process.env.NODE_ENV == 'production' ? 'https://vue-js-golang-backend.herokuapp.com' : 'http://localhost:4444';
+console.info(BASE_URI)
 const client = axios.create({
-  baseURL: process.env.NODE_ENV == 'production' ? 'https://hidden-woodland-44165.herokuapp.com' : 'http://localhost:4444',
+  baseURL: BASE_URI,
   json: true
 });
 
